@@ -7,6 +7,7 @@ const UP = Vector2(0, -1)
 const WORLD_LIMIT = 3000
 
 var motion = Vector2(0,0)
+var lives = 3
 
 signal animate
 
@@ -47,7 +48,16 @@ func animate():
 #	
 func end_game():
 	get_tree().change_scene("res://Levels/GameOver.tscn")
-
+	
+	
+func hurt():
+	motion.y -= 1
+	yield(get_tree(), "idle_frame")
+	motion.y -= JUMP_SPEED
+	lives -= 1
+	#print(String(lives))
+	if lives < 0:
+		end_game()
 		
 		
 		
