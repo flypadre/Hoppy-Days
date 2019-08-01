@@ -5,6 +5,8 @@ const GRAVITY = 300
 const JUMP_SPEED = 5000
 const UP = Vector2(0, -1)
 const WORLD_LIMIT = 3000
+const BOOST_MULTIPLIER = 1.5
+
 
 var motion = Vector2(0,0)
 var lives = 3
@@ -22,7 +24,7 @@ func _physics_process(delta):
 func apply_gravity():
 	if position.y > WORLD_LIMIT:
 		end_game()
-	if is_on_floor():
+	if is_on_floor() and motion.y > 0:
 		motion.y = 0
 	elif is_on_ceiling():
 		motion.y = 1
@@ -32,6 +34,7 @@ func apply_gravity():
 func jump():
 	if Input.is_action_pressed("jump") and is_on_floor():
 		motion.y -= JUMP_SPEED
+		$JumpSFX.play()
 		
 func move():
 	if (Input.is_action_pressed("left") and Input.is_action_pressed("right")):
@@ -53,12 +56,16 @@ func end_game():
 func hurt():
 	motion.y -= 1
 	yield(get_tree(), "idle_frame")
-	motion.y -= JUMP_SPEED
+	motion.y = -JUMP_SPEED
 	lives -= 1
+	$HurtSFX.play()
 	#print(String(lives))
 	if lives < 0:
 		end_game()
 		
-		
+func boost():
+	motion.y -= 1
+	yield(get_tree(), "idle_frame")
+	motion.y = -JUMP_SPEED * BOOST_MULTIPLIER
 		
 		
